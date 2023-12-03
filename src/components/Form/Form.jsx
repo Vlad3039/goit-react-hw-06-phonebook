@@ -1,8 +1,10 @@
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { Formik, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import { Box } from 'components/Box/Box';
 import { Input, Button, StyledForm } from './Form.styled';
+import { addContact } from 'redux/contactsSlice';
 
 const schema = yup.object().shape({
   name: yup
@@ -21,14 +23,18 @@ const schema = yup.object().shape({
     .required('Add the phone number, please'),
 });
 
-export const ContactForm = ({ onSubmit }) => {
+export const ContactForm = () => {
+  const dispatch = useDispatch();
   const initialValues = {
     name: '',
     number: '',
   };
 
   const handleSubmit = (values, { resetForm }) => {
-    onSubmit(values);
+    console.log(values);
+    const { name, number } = values;
+    dispatch(addContact(name, number));
+
     resetForm();
   };
 
@@ -57,6 +63,6 @@ export const ContactForm = ({ onSubmit }) => {
   );
 };
 
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
+// ContactForm.propTypes = {
+//   onSubmit: PropTypes.func.isRequired,
+// };
