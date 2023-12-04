@@ -1,18 +1,16 @@
-// import { useState } from 'react';
-// import { useHookLS } from './hooks/hookLS';
-
-// import Notiflix from 'notiflix';
-// import { nanoid } from 'nanoid';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { Box } from './Box/Box';
 import { Boxitem } from './ContactsList/ContactList.styled';
-
 import { ContactForm } from './Form/Form';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactsList/ContactList';
-import { useSelector } from 'react-redux';
+
+const selectContacts = state => state.contacts;
 
 export function App() {
-  const filteredContacts = useSelector(state => state.contacts);
+  const filteredContacts = useSelector(selectContacts);
+
   return (
     <Box
       display="flex"
@@ -25,11 +23,8 @@ export function App() {
     >
       <div>
         <h2>Phonebook</h2>
-        <ContactForm
-        // onSubmit={addContact}
-        />
+        <ContactForm />
       </div>
-      {/* contacts.length */}
       {filteredContacts.length > 0 ? (
         <div>
           <h2>Contacts</h2>
@@ -39,12 +34,8 @@ export function App() {
             border="1px solid black"
           >
             <Filter />
-            {/* value={filter} onChange={handleFilterInput} */}
           </Boxitem>
-          <ContactList
-          // contacts={contacts}
-          // onDeleteContact={deleteContact}
-          />
+          <ContactList />
         </div>
       ) : (
         <h2>No contacts yet</h2>

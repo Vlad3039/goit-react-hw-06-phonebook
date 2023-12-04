@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-
 import Notiflix from 'notiflix';
 import { nanoid } from 'nanoid';
 
@@ -14,13 +13,18 @@ const contactsSlice = createSlice({
   reducers: {
     addContact: {
       reducer: (state, action) => {
-        const some = state.some(
-          i => i.name.toLowerCase() === action.payload.name.toLowerCase()
+        const existingContact = state.find(
+          contact =>
+            contact.name.toLowerCase() === action.payload.name.toLowerCase()
         );
-        if (some)
-          return Notiflix.Notify.failure(
-            ` ${action.payload.name} is already in contacts`
+
+        if (existingContact) {
+          Notiflix.Notify.failure(
+            `${action.payload.name} is already in contacts`
           );
+          return state;
+        }
+
         state.push(action.payload);
       },
       prepare: (name, number) => {
