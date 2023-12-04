@@ -1,5 +1,5 @@
 // import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux'; // Import useSelector
+import { useDispatch, useSelector } from 'react-redux';
 import { Formik, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import { Box } from 'components/Box/Box';
@@ -23,17 +23,10 @@ const schema = yup.object().shape({
     .required('Add the phone number, please'),
 });
 
-// Custom hook to check if a contact exists
-const useContactExists = (name, number) => {
-  const contacts = useSelector(state => state.contacts);
-
-  return contacts.some(
-    contact => contact.name === name || contact.number === number
-  );
-};
-
 export const ContactForm = () => {
   const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts);
+
   const initialValues = {
     name: '',
     number: '',
@@ -43,12 +36,14 @@ export const ContactForm = () => {
     const { name, number } = values;
 
     // Check if the contact already exists
-    const contactExists = useContactExists(name, number);
+    const contactExists = contacts.some(
+      contact => contact.name === name || contact.number === number
+    );
 
     if (contactExists) {
       console.log('Contact already exists!');
     } else {
-      dispatch(addContact(name, number));
+      dispatch(addContact({ name, number }));
       console.log('Contact added successfully!');
       resetForm();
     }
