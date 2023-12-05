@@ -1,10 +1,12 @@
-// import PropTypes from 'prop-types';
+// Form.jsx
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import { Box } from 'components/Box/Box';
 import { Input, Button, StyledForm } from './Form.styled';
 import { addContact } from 'redux/contactsSlice';
+import { selectContacts } from 'redux/selector';
 
 const schema = yup.object().shape({
   name: yup
@@ -25,7 +27,7 @@ const schema = yup.object().shape({
 
 export const ContactForm = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts);
+  const contacts = useSelector(selectContacts);
 
   const initialValues = {
     name: '',
@@ -35,17 +37,20 @@ export const ContactForm = () => {
   const handleSubmit = async (values, { resetForm }) => {
     const { name, number } = values;
 
-    // Check if the contact already exists
-    const contactExists = contacts.some(
-      contact => contact.name === name || contact.number === number
-    );
+    if (contacts && contacts.length > 0) {
+      const contactExists = contacts.some(
+        contact => contact.name === name || contact.number === number
+      );
 
-    if (contactExists) {
-      console.log('Contact already exists!');
+      if (contactExists) {
+        console.log('Contact already exists!');
+      } else {
+        dispatch(addContact({ name, number }));
+        console.log('Contact added successfully!');
+        resetForm();
+      }
     } else {
-      dispatch(addContact({ name, number }));
-      console.log('Contact added successfully!');
-      resetForm();
+      console.error('Contacts data is empty or undefined.');
     }
   };
 
@@ -73,7 +78,3 @@ export const ContactForm = () => {
     </Formik>
   );
 };
-
-// ContactForm.propTypes = {
-//   onSubmit: PropTypes.func.isRequired,
-// };
